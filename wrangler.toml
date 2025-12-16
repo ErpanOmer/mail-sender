@@ -7,9 +7,9 @@ compatibility_flags = ["nodejs_compat"]
 secrets_store_secrets = [
   { 
     binding = "RESEND_API_KEY",
-    store_id= "99d3a15b4f1b4a759d49f0c8501b253b",
+    store_id = "99d3a15b4f1b4a759d49f0c8501b253b",
     secret_name = "RESEND_API_KEY"
-}
+  }
 ]
 
 # Automatically place your workloads in an optimal location to minimize latency.
