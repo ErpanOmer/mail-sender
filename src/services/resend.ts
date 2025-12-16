@@ -7,7 +7,9 @@ export async function sendEmailWithResend(
   react: React.ReactElement
 ): Promise<ResendResponse> {
   try {
-    const resend = new Resend(env.RESEND_API_KEY);
+    // Example of using the secret safely in an API request
+    const APIkey = await env.RESEND_API_KEY.get()
+    const resend = new Resend(APIkey);
 
     const data = await resend.emails.send({
       from: 'Pedego Recall<pedego@resend.dev>', // Change to your verified Resend domain

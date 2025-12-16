@@ -4,6 +4,14 @@ main = "src/index.tsx"
 compatibility_date = "2024-04-23"
 compatibility_flags = ["nodejs_compat"]
 
+secrets_store_secrets = [
+  { 
+    binding = "RESEND_API_KEY",
+    store_id= "99d3a15b4f1b4a759d49f0c8501b253b",
+    secret_name = "RESEND_API_KEY"
+}
+]
+
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Worker, running it closer to your back-end infrastructure
 # rather than the end user may result in better performance.
