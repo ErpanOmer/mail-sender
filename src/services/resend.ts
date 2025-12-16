@@ -8,8 +8,8 @@ export async function sendEmailWithResend(
 ): Promise<ResendResponse> {
   try {
     // Example of using the secret safely in an API request
-    const APIkey = await env.RESEND_API_KEY.get()
-    const resend = new Resend(APIkey);
+    const RESEND_API_KEY = await env.RESEND_API_KEY.get();
+    const resend = new Resend(RESEND_API_KEY);
 
     const data = await resend.emails.send({
       from: 'Pedego Recall<pedego@resend.dev>', // Change to your verified Resend domain
