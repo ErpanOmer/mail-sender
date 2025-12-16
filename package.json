@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
+    "wrangler": "wrangler",
     "lint:fix": "biome check . --write",
     "lint": "biome check ."
   },
