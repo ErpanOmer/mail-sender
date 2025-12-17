@@ -32,6 +32,8 @@ export interface RateLimitStore {
 export interface Env {
   RESEND_API_KEY: any;
   SEND_SUPPORT_EMAIL: string;
+  ENV: 'development' | 'production';
+  API_KEY: string;
   AUTH_TOKEN: string;
   DEBUG_TOKEN: string;
   ENVIRONMENT: 'development' | 'production';

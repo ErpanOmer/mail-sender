@@ -7,13 +7,13 @@ export async function sendEmailWithResend(
   react: React.ReactElement
 ): Promise<ResendResponse> {
   try {
-    // Example of using the secret safely in an API request
-    const RESEND_API_KEY = await env.RESEND_API_KEY.get();
+    const RESEND_API_KEY = env.ENV === "development" ? env.API_KEY : await env.RESEND_API_KEY.get();
     const resend = new Resend(RESEND_API_KEY);
 
     const data = await resend.emails.send({
       from: 'Pedego Recall<pedego@nurverse.com>', // Change to your verified Resend domain
-      to: env.SEND_SUPPORT_EMAIL,
+      // to: ['erpanomer@gmail.com'],
+      to: ['erpanomer@gmail.com', 'seven@newurtopia.com', 'recall@pedego.com', 'paul@pedego.com'],
       subject,
       react,
     });
