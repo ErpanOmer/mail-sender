@@ -22,7 +22,7 @@ secrets_store_secrets = [
 # Note: Use secrets to store sensitive data.
 # - https://developers.cloudflare.com/workers/configuration/secrets/
 [vars]
-SEND_SUPPORT_EMAIL = "erpanomer@gmail.com"
+SEND_SUPPORT_EMAIL = "recall@pedego.com"
 
 # Bind the Workers AI model catalog. Run machine learning models, powered by serverless GPUs, on Cloudflare’s global network
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#workers-ai

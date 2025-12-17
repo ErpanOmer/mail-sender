@@ -12,7 +12,7 @@ export async function sendEmailWithResend(
     const resend = new Resend(RESEND_API_KEY);
 
     const data = await resend.emails.send({
-      from: 'Pedego Recall<pedego@resend.dev>', // Change to your verified Resend domain
+      from: 'Pedego Recall<pedego@nurverse.com>', // Change to your verified Resend domain
       to: env.SEND_SUPPORT_EMAIL,
       subject,
       react,
