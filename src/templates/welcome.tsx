@@ -33,7 +33,7 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({ data, isSupport = fa
               </>
             ) : (
               <>
-                <Heading style={h1}>Hi Customer,</Heading>
+                <Heading style={h1}>Hi {data.firstName} {data.lastName},</Heading>
                 <Text style={subtitle}>
                   Your registration has been submitted and is being processed.
                   We will notify you when the parts ship to the dealer. The dealer will install and repair your Fat Tire Trike free of charge.
