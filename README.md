@@ -1,79 +1,121 @@
-# Resend with Cloudflare Workers
+# Mail Sender Worker
 
-This example shows how to use Resend with [Cloudflare Workers](https://workers.cloudflare.com).
+A Cloudflare Worker project designed to send transactional emails using [Resend](https://resend.com) and [React Email](https://react.email). This service handles form submissions and sends confirmation emails with dynamic content.
 
-## Prerequisites
+## Features
 
-To get the most out of this guide, you’ll need to:
+- **Serverless**: Built on Cloudflare Workers.
+- **Email Sending**: Uses Resend API for reliable email delivery.
+- **Dynamic Templates**: React-based email templates for consistent branding.
+- **Authentication**: Bearer token authentication for API security.
+- **Rate Limiting**: Built-in rate limiting to prevent abuse.
+- **Preview Endpoint**: Endpoint to preview email templates with dynamic data.
 
-* [Create an API key](https://resend.com/api-keys)
-* [Verify your domain](https://resend.com/domains)
+## API Endpoints
 
-## Instructions
+### 1. Send Email
 
-### 1. Install
+Sends an email based on the submitted data.
 
-Get the Resend Node.js SDK.
+- **URL**: `/send`
+- **Method**: `POST`
+- **Headers**:
+  - `Authorization`: `Bearer <YOUR_AUTH_TOKEN>`
+  - `Content-Type`: `application/json`
+- **Body** (JSON):
+
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john@example.com",
+  "phone": "1234567890",
+  "serialNumber": "SN123456",
+  "addressResult": "123 Main St, City, Country",
+  "country": "USA",
+  "state": "CA",
+  "zip": "90210",
+  "affirmation": "on"
+}
+```
+
+### 2. Template Preview
+
+Preview the email template with mock data.
+
+- **URL**: `/template`
+- **Method**: `GET`
+- **Query Parameters**:
+  - `template`: (Optional) Template name (default: `welcome`).
+  - `debug`: (Required in production) Debug token for access.
+  - *You can also pass query parameters to override mock data fields (e.g., `?firstName=Alice`)*
+
+### 3. Health Check
+
+- **URL**: `/health`
+- **Method**: `GET`
+- **Response**: Returns simple health status.
+
+## Setup & Development
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/)
+- [Cloudflare Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
+- [Resend Account](https://resend.com/)
+
+### Installation
+
+1.  Clone the repository.
+2.  Install dependencies:
 
 ```bash
-npm install resend
+npm install
 ```
 
-### 2. Create an email template
+### Configuration
 
-Start by creating your email template on `src/emails/email-template.tsx`:
+Create a `.dev.vars` file for local development (which simulates the secrets) or set these secrets in your Cloudflare Worker settings:
 
-```tsx
-import * as React from 'react';
-
-interface EmailTemplateProps {
-  firstName: string;
-}
-
-export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
-  firstName,
-}) => (
-  <div>
-    <h1>Welcome, {firstName}!</h1>
-  </div>
-);
-
-export default EmailTemplate;
+```ini
+RESEND_API_KEY=re_123...
+AUTH_TOKEN=your_secure_auth_token
+DEBUG_TOKEN=your_secure_debug_token
+SEND_SUPPORT_EMAIL=recall@pedego.com
+ENV=development
 ```
 
-### 3. Send the email using React and the SDK
+Note: `RESEND_API_KEY` is typically stored as a secret in Cloudflare.
 
-Change the file extension of the worker's main file to `tsx` and modify your configurations.
+### Running Locally
 
-After that, you can send your email using the `react` parameter:
+To start the local development server:
 
-```tsx
-import * as React from 'react';
-import { Resend } from 'resend';
-import { EmailTemplate } from './emails/email-template';
-
-export default {
-  async fetch(request, env, context): Promise<Response> {
-    const resend = new Resend('re_123456789');
-
-    const data = await resend.emails.send({
-      from: 'Acme <onboarding@resend.dev>',
-      to: ['delivered@resend.dev'],
-      subject: 'hello world',
-      react: <EmailTemplate firstName="John" />,
-    });
-
-    return Response.json(data);
-  },
-} satisfies ExportedHandler<Env, ExecutionContext>;
+```bash
+npm run dev
+# or
+npx wrangler dev
 ```
 
-### 4. Deploy and send email
+The worker will be available at `http://localhost:8787`.
 
-Run `wrangler deploy` and wait for it to finish. Once it's done, it will
-give you a URL to try out, like `https://my-worker.your_name.workers.dev`,
-that you can open and verify that your email has been sent.
+### Deployment
+
+Deploy to Cloudflare Workers:
+
+```bash
+npm run wrangler deploy
+```
+
+## Project Structure
+
+- `src/index.tsx`: Main entry point and router dispatcher.
+- `src/routes/`: Contains route handlers (`send.ts`, `template.ts`, `health.ts`).
+- `src/emails/`: React components defining the email templates.
+- `src/utils/`: Utility functions for authentication, rate limiting, and response formatting.
+- `src/types.ts`: TypeScript interface definitions.
+- `wrangler.toml`: Cloudflare Workers configuration file.
 
 ## License
 
-MIT License
+MIT

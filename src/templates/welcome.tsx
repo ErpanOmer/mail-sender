@@ -4,9 +4,10 @@ import { SubmissionData } from '../types';
 
 interface WelcomeEmailProps {
   data: SubmissionData;
+  isSupport?: boolean;
 }
 
-export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({ data }) => (
+export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({ data, isSupport = false }) => (
   <Html>
     <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,18 +16,30 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({ data }) => (
     <Preview>New Recall Submission: {data.firstName} {data.lastName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        
+
         {/* Header Strip */}
         <Section style={headerStrip} />
 
         <Section style={content}>
           {/* Title Section */}
           <Section style={header}>
-            <Heading style={h1}>Hello Support Team,</Heading>
-            <Text style={subtitle}>
-              A new Fat Tire Trike recall / service registration has been submitted by a customer.
-Please review the details below and proceed with the next steps.
-            </Text>
+            {isSupport ? (
+              <>
+                <Heading style={h1}>Hello Support Team,</Heading>
+                <Text style={subtitle}>
+                  A new Fat Tire Trike recall / service registration has been submitted by a customer.
+                  Please review the details below and proceed with the next steps.
+                </Text>
+              </>
+            ) : (
+              <>
+                <Heading style={h1}>Hi Customer,</Heading>
+                <Text style={subtitle}>
+                  Your registration has been submitted and is being processed.
+                  We will notify you when the parts ship to the dealer. The dealer will install and repair your Fat Tire Trike free of charge.
+                </Text>
+              </>
+            )}
           </Section>
 
           <Hr style={divider} />
@@ -34,7 +47,7 @@ Please review the details below and proceed with the next steps.
           {/* Primary Info (Name & Contact) */}
           <Section style={section}>
             <Text style={sectionTitle}>Customer Information</Text>
-            
+
             <Row style={row}>
               <Column style={column}>
                 <Text style={label}>Full Name</Text>
@@ -66,7 +79,7 @@ Please review the details below and proceed with the next steps.
                 <Text style={value}>Pedego Fat Tire Trike</Text>
               </Column>
             </Row>
-            
+
             <Row style={row}>
               <Column>
                 <Text style={label}>Serial Number</Text>
@@ -115,26 +128,28 @@ Please review the details below and proceed with the next steps.
             </Row>
           </Section>
 
-          <Hr style={divider} />
 
           {/* Affirmation Status */}
-          {data.affirmation === 'on' && (
-            <Section style={section}>
-              <Text style={sectionTitle}>Verification</Text>
-              <Row style={row}>
-                <Column>
-                  <Text style={verificationBadge}>✓ Customer Confirmed</Text>
-                </Column>
-              </Row>
-            </Section>
-          )}
+          {data.affirmation === 'on' && isSupport ? (
+            <>
+              <Hr style={divider} />
+              <Section style={section}>
+                <Text style={sectionTitle}>Verification</Text>
+                <Row style={row}>
+                  <Column>
+                    <Text style={verificationBadge}>✓ Customer Confirmed</Text>
+                  </Column>
+                </Row>
+              </Section>
+            </>
+          ) : null}
 
           <Hr style={divider} />
 
           {/* Footer / Action hint */}
           <Section style={footer}>
             <Text style={footerText}>
-              This is an automated notification from the Recall Support System. 
+              This is an automated notification from the Recall Support System.
             </Text>
           </Section>
 

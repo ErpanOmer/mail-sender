@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Env, SubmissionData } from '../types';
 import { successResponse, errorResponse } from '../utils/response';
 import { verifyAuthToken, checkRateLimit } from '../utils/auth';
-import { sendEmailWithResend, validateSubmissionData } from '../services/resend';
-import { getEmailTemplate, getTemplateSubject, TemplateType } from '../templates';
+import { sendRecallEmails, validateSubmissionData } from '../services/resend';
 
 export async function handleSend(request: Request, env: Env): Promise<Response> {
   // Verify authentication
@@ -30,13 +29,8 @@ export async function handleSend(request: Request, env: Env): Promise<Response> 
       return errorResponse(validation.error || 'Validation failed', 400);
     }
 
-    // Get email template (React element)
-    const templateType: TemplateType = 'welcome';
-    const emailTemplate = getEmailTemplate(templateType, data);
-    const subject = getTemplateSubject(templateType);
-
-    // Send via Resend with React element
-    const result = await sendEmailWithResend(env, subject, emailTemplate);
+    // Send emails (Support + Customer)
+    const result = await sendRecallEmails(env, data);
 
     if (result.error) {
       return errorResponse(`Failed to send email: ${result.error}`, 500);

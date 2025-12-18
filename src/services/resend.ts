@@ -1,32 +1,57 @@
 import { Resend } from 'resend';
 import { SubmissionData, ResendResponse, Env } from '../types';
+import { getEmailTemplate, getTemplateSubject } from '../templates';
 
-export async function sendEmailWithResend(
+export async function sendRecallEmails(
   env: Env,
-  subject: string,
-  react: React.ReactElement
+  data: SubmissionData
 ): Promise<ResendResponse> {
   try {
     const RESEND_API_KEY = env.ENV === "development" ? env.API_KEY : await env.RESEND_API_KEY.get();
     const resend = new Resend(RESEND_API_KEY);
 
-    const data = await resend.emails.send({
-      from: 'Pedego Recall<pedego@nurverse.com>', // Change to your verified Resend domain
-      // to: ['erpanomer@gmail.com'],
-      to: ['erpanomer@gmail.com', 'seven@newurtopia.com', 'recall@pedego.com', 'paul@pedego.com'],
-      subject,
-      react,
+    // 1. Send to Support Team
+    const supportRecipients = env.ENV === "development"
+      ? ['erpanomer@gmail.com']
+      : ['erpanomer@gmail.com', 'seven@newurtopia.com', 'paul@pedego.com'];
+
+    const supportTemplate = getEmailTemplate('welcome', data, true);
+    const supportSubject = getTemplateSubject('welcome', true);
+
+    const supportResult = await resend.emails.send({
+      from: 'Pedego Recall<pedego@nurverse.com>',
+      to: supportRecipients,
+      subject: supportSubject,
+      react: supportTemplate,
     });
 
-    if (data.error) {
-      return {
-        error: data.error.message || 'Failed to send email',
-      };
+    if (supportResult.error) {
+      console.error("Failed to send support email:", supportResult.error);
+      return { error: supportResult.error.message || 'Failed to send support email' };
+    }
+
+    // 2. Send to Customer
+    if (data.email) {
+      const customerTemplate = getEmailTemplate('welcome', data, false);
+      const customerSubject = getTemplateSubject('welcome', false);
+
+      const customerResult = await resend.emails.send({
+        from: 'Pedego Recall<pedego@nurverse.com>',
+        to: [data.email],
+        subject: customerSubject,
+        react: customerTemplate,
+      });
+
+      if (customerResult.error) {
+        console.warn("Failed to send customer email:", customerResult.error);
+        // We don't fail the whole request if customer email fails, but maybe log it?
+        // For now, let's just return the support email ID as the main success indicator.
+      }
     }
 
     return {
-      id: data.data?.id,
-      message: 'Email sent successfully',
+      id: supportResult.data?.id,
+      message: 'Emails sent successfully',
     };
   } catch (error) {
     return {
