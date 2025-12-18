@@ -13,7 +13,7 @@ export async function sendRecallEmails(
     // 1. Send to Support Team
     const supportRecipients = env.ENV === "development"
       ? ['erpanomer@gmail.com']
-      : ['erpanomer@gmail.com', 'seven@newurtopia.com', 'paul@pedego.com'];
+      : ['erpanomer@gmail.com', 'seven@newurtopia.com', 'recall@pedego.com'];
 
     const supportTemplate = getEmailTemplate('welcome', data, true);
     const supportSubject = getTemplateSubject('welcome', true);
