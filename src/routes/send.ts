@@ -18,7 +18,7 @@ export async function handleSend(request: Request, env: Env): Promise<Response> 
   try {
     const data = (await request.json()) as SubmissionData;
 
-    console.log('Received /send request with data:', data);
+    console.log('Received /send request with data:', JSON.stringify(data));
 
     // Validate required fields
     const validation = validateSubmissionData(data);
