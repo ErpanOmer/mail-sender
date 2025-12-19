@@ -15,6 +15,7 @@ export function successResponse<T>(data: T, message?: string): Response {
 }
 
 export function errorResponse(error: string, status: number = 400): Response {
+  console.error(`Error Response: ${error}`, status);
   return new Response(
     JSON.stringify({
       success: false,
